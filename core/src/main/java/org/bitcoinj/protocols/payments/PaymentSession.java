@@ -90,8 +90,8 @@ public class PaymentSession {
      * the signature provided by the payment request. An exception is thrown by the future if the signature cannot
      * be verified.</p>
      */
-    public static ListenableFuture<PaymentSession> createFromBitcoinUri(final BitcoinURI uri) throws PaymentProtocolException {
-        return createFromBitcoinUri(uri, true, null);
+    public static ListenableFuture<PaymentSession> createFromBitcoinUri(final BitcoinURI uri, NetWorkRecognizer recognizer) throws PaymentProtocolException {
+        return createFromBitcoinUri(uri, true, recognizer, null);
     }
 
     /**
@@ -102,9 +102,9 @@ public class PaymentSession {
      * be used to verify the signature provided by the payment request. An exception is thrown by the future if the
      * signature cannot be verified.
      */
-    public static ListenableFuture<PaymentSession> createFromBitcoinUri(final BitcoinURI uri, final boolean verifyPki)
+    public static ListenableFuture<PaymentSession> createFromBitcoinUri(final BitcoinURI uri, final boolean verifyPki, NetWorkRecognizer recognizer)
             throws PaymentProtocolException {
-        return createFromBitcoinUri(uri, verifyPki, null);
+        return createFromBitcoinUri(uri, verifyPki, recognizer, null);
     }
 
     /**
@@ -116,13 +116,13 @@ public class PaymentSession {
      * signature cannot be verified.
      * If trustStoreLoader is null, the system default trust store is used.
      */
-    public static ListenableFuture<PaymentSession> createFromBitcoinUri(final BitcoinURI uri, final boolean verifyPki, @Nullable final TrustStoreLoader trustStoreLoader)
+    public static ListenableFuture<PaymentSession> createFromBitcoinUri(final BitcoinURI uri, final boolean verifyPki, NetWorkRecognizer recognizer, @Nullable final TrustStoreLoader trustStoreLoader)
             throws PaymentProtocolException {
         String url = uri.getPaymentRequestUrl();
         if (url == null)
             throw new PaymentProtocolException.InvalidPaymentRequestURL("No payment request URL (r= parameter) in BitcoinURI " + uri);
         try {
-            return fetchPaymentRequest(new URI(url), verifyPki, trustStoreLoader);
+            return fetchPaymentRequest(new URI(url), verifyPki, recognizer, trustStoreLoader);
         } catch (URISyntaxException e) {
             throw new PaymentProtocolException.InvalidPaymentRequestURL(e);
         }
@@ -135,8 +135,8 @@ public class PaymentSession {
      * be used to verify the signature provided by the payment request. An exception is thrown by the future if the
      * signature cannot be verified.
      */
-    public static ListenableFuture<PaymentSession> createFromUrl(final String url) throws PaymentProtocolException {
-        return createFromUrl(url, true, null);
+    public static ListenableFuture<PaymentSession> createFromUrl(final String url, NetWorkRecognizer recognizer) throws PaymentProtocolException {
+        return createFromUrl(url, true, recognizer, null);
     }
 
     /**
@@ -146,9 +146,9 @@ public class PaymentSession {
      * be used to verify the signature provided by the payment request. An exception is thrown by the future if the
      * signature cannot be verified.
      */
-    public static ListenableFuture<PaymentSession> createFromUrl(final String url, final boolean verifyPki)
+    public static ListenableFuture<PaymentSession> createFromUrl(final String url, final boolean verifyPki, NetWorkRecognizer recognizer)
             throws PaymentProtocolException {
-        return createFromUrl(url, verifyPki, null);
+        return createFromUrl(url, verifyPki, recognizer, null);
     }
 
     /**
@@ -159,18 +159,18 @@ public class PaymentSession {
      * signature cannot be verified.
      * If trustStoreLoader is null, the system default trust store is used.
      */
-    public static ListenableFuture<PaymentSession> createFromUrl(final String url, final boolean verifyPki, @Nullable final TrustStoreLoader trustStoreLoader)
+    public static ListenableFuture<PaymentSession> createFromUrl(final String url, final boolean verifyPki, NetWorkRecognizer recognizer, @Nullable final TrustStoreLoader trustStoreLoader)
             throws PaymentProtocolException {
         if (url == null)
             throw new PaymentProtocolException.InvalidPaymentRequestURL("null paymentRequestUrl");
         try {
-            return fetchPaymentRequest(new URI(url), verifyPki, trustStoreLoader);
+            return fetchPaymentRequest(new URI(url), verifyPki, recognizer, trustStoreLoader);
         } catch(URISyntaxException e) {
             throw new PaymentProtocolException.InvalidPaymentRequestURL(e);
         }
     }
 
-    private static ListenableFuture<PaymentSession> fetchPaymentRequest(final URI uri, final boolean verifyPki, @Nullable final TrustStoreLoader trustStoreLoader) {
+    private static ListenableFuture<PaymentSession> fetchPaymentRequest(final URI uri, final boolean verifyPki, final NetWorkRecognizer recognizer, @Nullable final TrustStoreLoader trustStoreLoader) {
         return executor.submit(new Callable<PaymentSession>() {
             @Override
             public PaymentSession call() throws Exception {
@@ -178,7 +178,7 @@ public class PaymentSession {
                 connection.setRequestProperty("Accept", PaymentProtocol.MIMETYPE_PAYMENTREQUEST);
                 connection.setUseCaches(false);
                 Protos.PaymentRequest paymentRequest = Protos.PaymentRequest.parseFrom(connection.getInputStream());
-                return new PaymentSession(paymentRequest, verifyPki, trustStoreLoader);
+                return new PaymentSession(paymentRequest, verifyPki, recognizer, trustStoreLoader);
             }
         });
     }
@@ -187,16 +187,16 @@ public class PaymentSession {
      * Creates a PaymentSession from the provided {@link Protos.PaymentRequest}.
      * Verifies PKI by default.
      */
-    public PaymentSession(Protos.PaymentRequest request) throws PaymentProtocolException {
-        this(request, true, null);
+    public PaymentSession(Protos.PaymentRequest request, NetWorkRecognizer recognizer) throws PaymentProtocolException {
+        this(request, true, recognizer, null);
     }
 
     /**
      * Creates a PaymentSession from the provided {@link Protos.PaymentRequest}.
      * If verifyPki is true, also validates the signature and throws an exception if it fails.
      */
-    public PaymentSession(Protos.PaymentRequest request, boolean verifyPki) throws PaymentProtocolException {
-        this(request, verifyPki, null);
+    public PaymentSession(Protos.PaymentRequest request, boolean verifyPki, NetWorkRecognizer recognizer) throws PaymentProtocolException {
+        this(request, verifyPki, recognizer, null);
     }
 
     /**
@@ -204,9 +204,9 @@ public class PaymentSession {
      * If verifyPki is true, also validates the signature and throws an exception if it fails.
      * If trustStoreLoader is null, the system default trust store is used.
      */
-    public PaymentSession(Protos.PaymentRequest request, boolean verifyPki, @Nullable final TrustStoreLoader trustStoreLoader) throws PaymentProtocolException {
+    public PaymentSession(Protos.PaymentRequest request, boolean verifyPki, NetWorkRecognizer recognizer, @Nullable final TrustStoreLoader trustStoreLoader) throws PaymentProtocolException {
         TrustStoreLoader nonNullTrustStoreLoader = trustStoreLoader != null ? trustStoreLoader : new TrustStoreLoader.DefaultTrustStoreLoader();
-        parsePaymentRequest(request);
+        parsePaymentRequest(request, recognizer);
         if (verifyPki) {
             try {
                 pkiVerificationData = PaymentProtocol.verifyPaymentRequestPki(request, nonNullTrustStoreLoader.getKeyStore());
@@ -380,7 +380,7 @@ public class PaymentSession {
         });
     }
 
-    private void parsePaymentRequest(Protos.PaymentRequest request) throws PaymentProtocolException {
+    private void parsePaymentRequest(Protos.PaymentRequest request, NetWorkRecognizer recognizer) throws PaymentProtocolException {
         try {
             if (request == null)
                 throw new PaymentProtocolException("request cannot be null");
@@ -395,7 +395,7 @@ public class PaymentSession {
             if (!paymentDetails.hasNetwork())
                 params = MainNetParams.get();
             else
-                params = NetworkParameters.fromPmtProtocolID(paymentDetails.getNetwork());
+                params = recognizer.fromPmtProtocolID(paymentDetails.getNetwork());
             if (params == null)
                 throw new PaymentProtocolException.InvalidNetwork("Invalid network " + paymentDetails.getNetwork());
             if (paymentDetails.getOutputsCount() < 1)

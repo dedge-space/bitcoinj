@@ -31,9 +31,11 @@ import java.io.File;
  * To get a test wallet you can use wallet-tool from the tools subproject.
  */
 public class RefreshWallet {
+    private static final NetWorkRecognizer RECOGNIZER = new NetWorkRecognizer();
+
     public static void main(String[] args) throws Exception {
         File file = new File(args[0]);
-        Wallet wallet = Wallet.loadFromFile(file);
+        Wallet wallet = Wallet.loadFromFile(file, RECOGNIZER);
         System.out.println(wallet.toString());
 
         // Set up the components and link them together.

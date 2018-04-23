@@ -17,6 +17,7 @@
 
 package org.bitcoinj.tools;
 
+import org.bitcoinj.core.NetWorkRecognizer;
 import org.bitcoinj.crypto.*;
 import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.params.RegTestParams;
@@ -115,6 +116,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class WalletTool {
     private static final Logger log = LoggerFactory.getLogger(WalletTool.class);
+    private static final NetWorkRecognizer RECOGNIZER = new NetWorkRecognizer();
 
     private static OptionSet options;
     private static OptionSpec<Date> dateFlag;
@@ -355,7 +357,7 @@ public class WalletTool {
             if (options.has("ignore-mandatory-extensions"))
                 loader.setRequireMandatoryExtensions(false);
             walletInputStream = new BufferedInputStream(new FileInputStream(walletFile));
-            wallet = loader.readWallet(walletInputStream, forceReset, (WalletExtension[])(null));
+            wallet = loader.readWallet(walletInputStream, forceReset, RECOGNIZER, (WalletExtension[])(null));
             if (!wallet.getParams().equals(params)) {
                 System.err.println("Wallet does not match requested network parameters: " +
                         wallet.getParams().getId() + " vs " + params.getId());
@@ -1045,10 +1047,10 @@ public class WalletTool {
             try {
                 ListenableFuture<PaymentSession> future;
                 if (location.startsWith("http")) {
-                    future = PaymentSession.createFromUrl(location, verifyPki);
+                    future = PaymentSession.createFromUrl(location, verifyPki, RECOGNIZER);
                 } else {
                     BitcoinURI paymentRequestURI = new BitcoinURI(location);
-                    future = PaymentSession.createFromBitcoinUri(paymentRequestURI, verifyPki);
+                    future = PaymentSession.createFromBitcoinUri(paymentRequestURI, verifyPki, RECOGNIZER);
                 }
                 PaymentSession session = future.get();
                 if (session != null) {
@@ -1086,7 +1088,7 @@ public class WalletTool {
             }
             PaymentSession session = null;
             try {
-                session = new PaymentSession(paymentRequest, verifyPki);
+                session = new PaymentSession(paymentRequest, verifyPki, RECOGNIZER);
             } catch (PaymentProtocolException e) {
                 System.err.println("Error creating payment session " + e.getMessage());
                 System.exit(1);

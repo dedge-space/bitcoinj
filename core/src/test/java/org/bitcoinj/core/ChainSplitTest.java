@@ -49,6 +49,7 @@ import static org.junit.Assert.*;
 public class ChainSplitTest {
     private static final Logger log = LoggerFactory.getLogger(ChainSplitTest.class);
     private static final NetworkParameters UNITTEST = UnitTestParams.get();
+    private static final NetWorkRecognizer RECOGNIZER = new NetWorkRecognizer();
     private Wallet wallet;
     private BlockChain chain;
     private Address coinsTo;
@@ -542,7 +543,7 @@ public class ChainSplitTest {
         // Now round trip the wallet and force a re-org.
         ByteArrayOutputStream bos = new ByteArrayOutputStream();
         wallet.saveToFileStream(bos);
-        wallet = Wallet.loadFromFileStream(new ByteArrayInputStream(bos.toByteArray()));
+        wallet = Wallet.loadFromFileStream(new ByteArrayInputStream(bos.toByteArray()), RECOGNIZER);
         final Block b2 = FakeTxBuilder.makeSolvedTestBlock(b1, t2, t3);
         final Block b3 = FakeTxBuilder.makeSolvedTestBlock(b2);
         chain.add(b2);

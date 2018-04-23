@@ -16,6 +16,7 @@
 
 package org.bitcoinj.tools;
 
+import org.bitcoinj.core.NetWorkRecognizer;
 import org.bitcoinj.crypto.TrustStoreLoader;
 import org.bitcoinj.protocols.payments.PaymentProtocol;
 import org.bitcoinj.protocols.payments.PaymentProtocolException;
@@ -38,6 +39,8 @@ import static java.lang.String.format;
 
 /** Takes a URL or bitcoin URI and prints information about the payment request. */
 public class PaymentProtocolTool {
+    private static final NetWorkRecognizer RECOGNIZER = new NetWorkRecognizer();
+
     public static void main(String[] args) {
         if (args.length < 1) {
             System.err.println("Provide a bitcoin URI or URL as the argument.");
@@ -54,9 +57,9 @@ public class PaymentProtocolTool {
                 FileInputStream stream = new FileInputStream(arg);
                 Protos.PaymentRequest request = Protos.PaymentRequest.parseFrom(stream);
                 stream.close();
-                session = new PaymentSession(request);
+                session = new PaymentSession(request, RECOGNIZER);
             } else if ("http".equals(uri.getScheme())) {
-                session = PaymentSession.createFromUrl(arg).get();
+                session = PaymentSession.createFromUrl(arg, RECOGNIZER).get();
             } else if ("bitcoin".equals(uri.getScheme())) {
                 BitcoinURI bcuri = new BitcoinURI(arg);
                 final String paymentRequestUrl = bcuri.getPaymentRequestUrl();
@@ -64,7 +67,7 @@ public class PaymentProtocolTool {
                     System.err.println("No r= param in bitcoin URI");
                     return;
                 }
-                session = PaymentSession.createFromBitcoinUri(bcuri).get();
+                session = PaymentSession.createFromBitcoinUri(bcuri, RECOGNIZER).get();
             } else {
                 System.err.println("Unknown URI scheme: " + uri.getScheme());
                 return;

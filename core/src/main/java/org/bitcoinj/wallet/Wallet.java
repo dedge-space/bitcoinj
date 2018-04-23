@@ -24,6 +24,8 @@ import com.google.common.primitives.*;
 import com.google.common.util.concurrent.*;
 import com.google.protobuf.*;
 import net.jcip.annotations.*;
+
+import org.bitcoinj.core.NetWorkRecognizer;
 import org.bitcoinj.core.listeners.*;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.AbstractBlockChain;
@@ -1518,12 +1520,12 @@ public class Wallet extends BaseTaggableObject
      * @param file the wallet file to read
      * @param walletExtensions extensions possibly added to the wallet.
      */
-    public static Wallet loadFromFile(File file, @Nullable WalletExtension... walletExtensions) throws UnreadableWalletException {
+    public static Wallet loadFromFile(File file, NetWorkRecognizer recognizer, @Nullable WalletExtension... walletExtensions) throws UnreadableWalletException {
         try {
             FileInputStream stream = null;
             try {
                 stream = new FileInputStream(file);
-                return loadFromFileStream(stream, walletExtensions);
+                return loadFromFileStream(stream, recognizer, walletExtensions);
             } finally {
                 if (stream != null) stream.close();
             }
@@ -1616,8 +1618,8 @@ public class Wallet extends BaseTaggableObject
     }
 
     /** Returns a wallet deserialized from the given input stream and wallet extensions. */
-    public static Wallet loadFromFileStream(InputStream stream, @Nullable WalletExtension... walletExtensions) throws UnreadableWalletException {
-        Wallet wallet = new WalletProtobufSerializer().readWallet(stream, walletExtensions);
+    public static Wallet loadFromFileStream(InputStream stream, NetWorkRecognizer recognizer, @Nullable WalletExtension... walletExtensions) throws UnreadableWalletException {
+        Wallet wallet = new WalletProtobufSerializer().readWallet(stream, recognizer, walletExtensions);
         if (!wallet.isConsistent()) {
             log.error("Loaded an inconsistent wallet");
         }

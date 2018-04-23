@@ -25,6 +25,7 @@ import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Context;
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.LegacyAddress;
+import org.bitcoinj.core.NetWorkRecognizer;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.PeerAddress;
 import org.bitcoinj.core.Sha256Hash;
@@ -78,6 +79,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class WalletProtobufSerializerTest {
     private static final NetworkParameters UNITTEST = UnitTestParams.get();
     private static final NetworkParameters MAINNET = MainNetParams.get();
+    private static final NetWorkRecognizer RECOGNIZER = new NetWorkRecognizer();
 
     private ECKey myKey;
     private ECKey myWatchedKey;
@@ -324,9 +326,9 @@ public class WalletProtobufSerializerTest {
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         new WalletProtobufSerializer().writeWallet(wallet, output);
         ByteArrayInputStream test = new ByteArrayInputStream(output.toByteArray());
-        assertTrue(WalletProtobufSerializer.isWallet(test));
+        assertTrue(WalletProtobufSerializer.isWallet(test, RECOGNIZER));
         ByteArrayInputStream input = new ByteArrayInputStream(output.toByteArray());
-        return new WalletProtobufSerializer().readWallet(input);
+        return new WalletProtobufSerializer().readWallet(input, RECOGNIZER);
     }
 
     @Test
