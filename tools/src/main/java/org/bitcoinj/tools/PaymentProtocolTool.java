@@ -16,7 +16,7 @@
 
 package org.bitcoinj.tools;
 
-import org.bitcoinj.core.NetWorkRecognizer;
+import org.bitcoinj.core.NetworkRecognizer;
 import org.bitcoinj.crypto.TrustStoreLoader;
 import org.bitcoinj.protocols.payments.PaymentProtocol;
 import org.bitcoinj.protocols.payments.PaymentProtocolException;
@@ -39,7 +39,7 @@ import static java.lang.String.format;
 
 /** Takes a URL or bitcoin URI and prints information about the payment request. */
 public class PaymentProtocolTool {
-    private static final NetWorkRecognizer RECOGNIZER = new NetWorkRecognizer();
+    private static final NetworkRecognizer RECOGNIZER = new NetworkRecognizer();
 
     public static void main(String[] args) {
         if (args.length < 1) {

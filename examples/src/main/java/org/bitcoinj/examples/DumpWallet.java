@@ -18,14 +18,14 @@ package org.bitcoinj.examples;
 
 import java.io.File;
 
-import org.bitcoinj.core.NetWorkRecognizer;
+import org.bitcoinj.core.NetworkRecognizer;
 import org.bitcoinj.wallet.Wallet;
 
 /**
  * DumpWallet loads a serialized wallet and prints information about what it contains.
  */
 public class DumpWallet {
-    private static final NetWorkRecognizer RECOGNIZER = new NetWorkRecognizer();
+    private static final NetworkRecognizer RECOGNIZER = new NetworkRecognizer();
 
     public static void main(String[] args) throws Exception {
         if (args.length != 1) {

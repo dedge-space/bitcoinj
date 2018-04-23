@@ -49,7 +49,7 @@ import static org.junit.Assert.*;
 public class ChainSplitTest {
     private static final Logger log = LoggerFactory.getLogger(ChainSplitTest.class);
     private static final NetworkParameters UNITTEST = UnitTestParams.get();
-    private static final NetWorkRecognizer RECOGNIZER = new NetWorkRecognizer();
+    private static final NetworkRecognizer RECOGNIZER = new NetworkRecognizer();
     private Wallet wallet;
     private BlockChain chain;
     private Address coinsTo;

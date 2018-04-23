@@ -96,7 +96,7 @@ public abstract class PrefixedChecksummedBytes implements Serializable, Cloneabl
         out.writeUTF(params.getId());
     }
 
-    private void readObject(ObjectInputStream in, NetWorkRecognizer recognizer) throws IOException, ClassNotFoundException {
+    private void readObject(ObjectInputStream in, NetworkRecognizer recognizer) throws IOException, ClassNotFoundException {
         in.defaultReadObject();
         try {
             Field paramsField = PrefixedChecksummedBytes.class.getDeclaredField("params");

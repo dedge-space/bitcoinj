@@ -41,7 +41,7 @@ import static org.junit.Assert.*;
 public class TransactionTest {
     private static final NetworkParameters UNITTEST = UnitTestParams.get();
     private static final Address ADDRESS = LegacyAddress.fromKey(UNITTEST, new ECKey());
-    private static final NetWorkRecognizer RECOGNIZER = new NetWorkRecognizer();
+    private static final NetworkRecognizer RECOGNIZER = new NetworkRecognizer();
 
     private Transaction tx;
 

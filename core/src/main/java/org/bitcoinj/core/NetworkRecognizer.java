@@ -27,7 +27,7 @@ import javax.annotation.Nullable;
  * @author Chenai Nakam(chenai.nakam@gmail.com)
  * @version 1.0, 23/04/2018
  */
-public class NetWorkRecognizer {
+public class NetworkRecognizer {
     /**
      * Returns the network parameters for the given string ID or NULL if not recognized.
      */

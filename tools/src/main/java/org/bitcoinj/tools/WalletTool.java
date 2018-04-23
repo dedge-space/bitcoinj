@@ -17,7 +17,7 @@
 
 package org.bitcoinj.tools;
 
-import org.bitcoinj.core.NetWorkRecognizer;
+import org.bitcoinj.core.NetworkRecognizer;
 import org.bitcoinj.crypto.*;
 import org.bitcoinj.params.MainNetParams;
 import org.bitcoinj.params.RegTestParams;
@@ -116,7 +116,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class WalletTool {
     private static final Logger log = LoggerFactory.getLogger(WalletTool.class);
-    private static final NetWorkRecognizer RECOGNIZER = new NetWorkRecognizer();
+    private static final NetworkRecognizer RECOGNIZER = new NetworkRecognizer();
 
     private static OptionSet options;
     private static OptionSpec<Date> dateFlag;

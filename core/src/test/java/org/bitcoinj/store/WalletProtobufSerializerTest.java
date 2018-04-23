@@ -25,7 +25,7 @@ import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Context;
 import org.bitcoinj.core.ECKey;
 import org.bitcoinj.core.LegacyAddress;
-import org.bitcoinj.core.NetWorkRecognizer;
+import org.bitcoinj.core.NetworkRecognizer;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.PeerAddress;
 import org.bitcoinj.core.Sha256Hash;
@@ -79,7 +79,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class WalletProtobufSerializerTest {
     private static final NetworkParameters UNITTEST = UnitTestParams.get();
     private static final NetworkParameters MAINNET = MainNetParams.get();
-    private static final NetWorkRecognizer RECOGNIZER = new NetWorkRecognizer();
+    private static final NetworkRecognizer RECOGNIZER = new NetworkRecognizer();
 
     private ECKey myKey;
     private ECKey myWatchedKey;

@@ -19,7 +19,7 @@ package org.bitcoinj.wallet;
 
 import com.google.protobuf.Message;
 import org.bitcoinj.core.Coin;
-import org.bitcoinj.core.NetWorkRecognizer;
+import org.bitcoinj.core.NetworkRecognizer;
 import org.bitcoinj.core.NetworkParameters;
 import org.bitcoinj.core.PeerAddress;
 import org.bitcoinj.core.Sha256Hash;
@@ -418,7 +418,7 @@ public class WalletProtobufSerializer {
      *
      * @throws UnreadableWalletException thrown in various error conditions (see description).
      */
-    public Wallet readWallet(InputStream input, NetWorkRecognizer recognizer, @Nullable WalletExtension... walletExtensions) throws UnreadableWalletException {
+    public Wallet readWallet(InputStream input, NetworkRecognizer recognizer, @Nullable WalletExtension... walletExtensions) throws UnreadableWalletException {
         return readWallet(input, false, recognizer, walletExtensions);
     }
 
@@ -438,7 +438,7 @@ public class WalletProtobufSerializer {
      *
      * @throws UnreadableWalletException thrown in various error conditions (see description).
      */
-    public Wallet readWallet(InputStream input, boolean forceReset, NetWorkRecognizer recognizer, @Nullable WalletExtension[] extensions) throws UnreadableWalletException {
+    public Wallet readWallet(InputStream input, boolean forceReset, NetworkRecognizer recognizer, @Nullable WalletExtension[] extensions) throws UnreadableWalletException {
         try {
             Protos.Wallet walletProto = parseToProto(input);
             final String paramsID = walletProto.getNetworkIdentifier();
@@ -615,7 +615,7 @@ public class WalletProtobufSerializer {
 
     /**
      * Returns the loaded protocol buffer from the given byte stream. You normally want
-     * {@link Wallet#loadFromFile(File, NetWorkRecognizer, WalletExtension...)} instead - this method is designed for low level
+     * {@link Wallet#loadFromFile(File, NetworkRecognizer, WalletExtension...)} instead - this method is designed for low level
      * work involving the wallet file format itself.
      */
     public static Protos.Wallet parseToProto(InputStream input) throws IOException {
@@ -834,7 +834,7 @@ public class WalletProtobufSerializer {
      *            input stream to test
      * @return true if input stream is a wallet
      */
-    public static boolean isWallet(InputStream is, NetWorkRecognizer recognizer) {
+    public static boolean isWallet(InputStream is, NetworkRecognizer recognizer) {
         try {
             final CodedInputStream cis = CodedInputStream.newInstance(is);
             final int tag = cis.readTag();
