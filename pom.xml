@@ -26,9 +26,11 @@
 
   <modules>
     <module>core</module>
-    <module>examples</module>
-    <module>tools</module>
-    <module>wallettemplate</module>
+      <!-- 使用 jitpack build 时候，应该将下面的注释掉 -->
+      <!-- 命令：mvn clean install -DskipTests -->
+    <!--<module>examples</module>-->
+    <!--<module>tools</module>-->
+    <!--<module>wallettemplate</module>-->
   </modules>
 
   <parent>
