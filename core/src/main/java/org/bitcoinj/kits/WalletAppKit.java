@@ -152,7 +152,7 @@ public class WalletAppKit extends AbstractIdleService {
      */
     public WalletAppKit setCheckpoints(InputStream checkpoints) {
         if (this.checkpoints != null)
-            Closeables.closeQuietly(checkpoints);
+            Closeables.closeQuietly(this.checkpoints);
         this.checkpoints = checkNotNull(checkpoints);
         return this;
     }
